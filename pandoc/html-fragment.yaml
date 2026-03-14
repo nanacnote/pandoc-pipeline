@@ -1,0 +1,21 @@
+from: markdown+fenced_code_blocks+pipe_tables+task_lists
+to: html5
+
+standalone: false
+embed-resources: true
+
+filters:
+  - pandoc/filters/diagram.lua
+
+metadata:
+  diagram:
+    cache: true
+
+highlight-style: pygments
+
+toc: true
+toc-depth: 3
+number-sections: true
+
+html-q-tags: true
+wrap: none
