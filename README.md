@@ -1,6 +1,10 @@
-# Pandoc HTML Defaults (with Diagrams)
+# Pandoc Pipeline
 
-A minimal, per-project setup for converting **Markdown → HTML** using Pandoc, with first-class support for **Mermaid and other diagrams** via `pandoc-ext-diagram`.
+A minimal, per-project setup for converting **Markdown** to multiple output formats using Pandoc, with first-class support for **Mermaid and other diagrams** via `pandoc-ext-diagram`.
+
+Supported outputs:
+- **HTML** — standalone documents or fragments for embedding
+- **PDF** — print-quality documents via XeLaTeX
 
 This project intentionally keeps things simple:
 
@@ -8,7 +12,7 @@ This project intentionally keeps things simple:
 * Input/output files are explicit
 * All common flags live in a Pandoc **defaults file**
 
-No wrapper scripts, no CSS, no templates.
+No wrapper scripts, no templates.
 
 ---
 
@@ -18,26 +22,32 @@ No wrapper scripts, no CSS, no templates.
 .
 ├─ pandoc/
 │  ├─ filters/
-│  │  └─ diagram.lua
+│  │  ├─ diagram.lua
+│  │  └─ pagebreak.lua
 │  ├─ html.yaml
 │  ├─ html-fragment.yaml
+│  ├─ pdf.yaml
 │  └─ syntax-highlighting.css
 │
 └─ README.md
 ```
-defaults for standalone HTML output
+
+* `pandoc/html.yaml` — defaults for standalone HTML output
 * `pandoc/html-fragment.yaml` — defaults for HTML fragments (no wrapper)
+* `pandoc/pdf.yaml` — defaults for PDF output via XeLaTeX
 * `pandoc/syntax-highlighting.css` — reusable CSS for code syntax highlighting
 * `pandoc/filters/diagram.lua` — vendored `pandoc-ext-diagram` Lua filter
-* `pandoc/html.yaml` — project defaults (acts like an rc file)
-* `README.md` — setup and usage instructions
+* `pandoc/filters/pagebreak.lua` — portable page break filter
 
 ---
 
 ## Requirements
 
 **Required:**
-- Pandoc **3.0+** 
+- Pandoc **3.0+**
+
+**Required for PDF output:**
+- XeLaTeX — part of TeX Live or MacTeX
 
 **Optional (for diagram rendering):**
 - Graphviz (`dot`) — for graph diagrams
@@ -62,14 +72,16 @@ sudo apt update && sudo apt install pandoc
 brew install pandoc
 ```
 
-**Fedora:**
+### XeLaTeX (required for PDF output)
+
+**Ubuntu / Debian:**
 ```bash
-sudo dnf install pandoc
+sudo apt install texlive-xetex texlive-fonts-recommended texlive-latex-extra
 ```
 
-**Verify:**
+**macOS:**
 ```bash
-pandoc --version
+brew install --cask mactex
 ```
 
 ### Diagram Engines (Optional)
@@ -83,11 +95,6 @@ sudo apt install graphviz
 **macOS:**
 ```bash
 brew install graphviz
-```
-
-**Fedora:**
-```bash
-sudo dnf install graphviz
 ```
 
 #### Mermaid CLI
@@ -153,10 +160,17 @@ When generating HTML fragments for insertion into your existing pages, include t
 
 The `pandoc/syntax-highlighting.css` file contains all Pandoc pygments syntax highlighting rules. Include it once in your codebase to ensure consistent code block styling across all generated fragments.
 
+### PDF
+
+```bash
+pandoc --defaults pandoc/pdf.yaml input.md -o output.pdf
+```
+
+Generates a print-ready PDF via XeLaTeX with a table of contents, numbered sections, and coloured hyperlinks.
+
 ---
 
-The defaults files bundle:
-- HTML5 output with styling
+Each defaults file bundles sensible defaults for its output format:
 - Table of contents
 - Diagram rendering (mermaid, dot, plantuml, tikz, etc.)
 - Syntax highlighting
@@ -169,12 +183,6 @@ pandoc --defaults pandoc/html.yaml \
   --toc-depth=2 \
   --css custom.css \
   input.md -o output.html
-```
-
-Or create new defaults files for different outputs (PDF, slides, EPUB, etc.):
-
-```bash
-pandoc --defaults pandoc/pdf.yaml input.md -o output.pdf
 ```
 
 ### Supported Diagram Types
@@ -193,17 +201,11 @@ Use the appropriate code fence based on what you have installed:
 
 ---
 
-## Customizing Output
+## Adding More Outputs
 
-To create a new defaults file for different output (PDF, slides, EPUB):
+To add a new output format, create a defaults file in `pandoc/` and pass it with `--defaults`:
 
 ```bash
-pandoc/pdf.yaml      # for PDF generation
-pandoc/slides.yaml   # for HTML5 slides
-pandoc/epub.yaml     # for EPUB output
-```
-
-Then use it:
-```bash
-pandoc --defaults pandoc/pdf.yaml input.md -o output.pdf
+pandoc --defaults pandoc/slides.yaml input.md -o output.html  # HTML5 slides
+pandoc --defaults pandoc/epub.yaml input.md -o output.epub    # EPUB
 ```
