@@ -1,4 +1,7 @@
 **/*.html
+**/*.pdf
+
+.bak
 local
 
 !pandoc/templates/*

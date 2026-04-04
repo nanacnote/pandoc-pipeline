@@ -214,6 +214,22 @@ Use the appropriate code fence based on what you have installed:
 
 ---
 
+## Copilot Chat
+
+A `/pandoc-build` prompt is included for running conversions directly from VS Code chat.
+
+Type `/pandoc-build` followed by your request:
+
+```
+/pandoc-build tests/input.md as html
+/pandoc-build convert local/blog-post-home-paas.md to pdf
+/pandoc-build tests/input.md to both full html and pdf
+```
+
+The prompt will show you the exact commands before running them and ask for confirmation. It backs up the source file to `.bak/` at the project root before writing any output.
+
+---
+
 ## Adding More Outputs
 
 To add a new output format, create a defaults file in `pandoc/` and pass it with `--defaults`:
