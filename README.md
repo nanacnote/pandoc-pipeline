@@ -21,27 +21,32 @@ No wrapper scripts, no templates.
 ```
 .
 ├─ pandoc/
+│  ├─ defaults/
+│  │  ├─ html.yaml
+│  │  ├─ html-fragment.yaml
+│  │  ├─ html-toc.yaml
+│  │  ├─ pdf.yaml
+│  │  └─ tts.yaml
 │  ├─ filters/
 │  │  ├─ diagram.lua
-│  │  └─ pagebreak.lua
+│  │  ├─ pagebreak.lua
+│  │  └─ tts.lua
 │  ├─ templates/
 │  │  └─ toc.html
-│  ├─ html.yaml
-│  ├─ html-fragment.yaml
-│  ├─ html-toc.yaml
-│  ├─ pdf.yaml
 │  └─ syntax-highlighting.css
 │
 └─ README.md
 ```
 
-* `pandoc/html.yaml` — defaults for standalone HTML output
-* `pandoc/html-fragment.yaml` — defaults for HTML fragments (no wrapper)
-* `pandoc/html-toc.yaml` — outputs **only the TOC** as a collapsible `<details>` block (no document body)
-* `pandoc/pdf.yaml` — defaults for PDF output via XeLaTeX
+* `pandoc/defaults/html.yaml` — defaults for standalone HTML output
+* `pandoc/defaults/html-fragment.yaml` — defaults for HTML fragments (no wrapper)
+* `pandoc/defaults/html-toc.yaml` — outputs **only the TOC** as a collapsible `<details>` block (no document body)
+* `pandoc/defaults/pdf.yaml` — defaults for PDF output via XeLaTeX
+* `pandoc/defaults/tts.yaml` — defaults for plain-text TTS output
 * `pandoc/syntax-highlighting.css` — reusable CSS for code syntax highlighting
 * `pandoc/filters/diagram.lua` — vendored `pandoc-ext-diagram` Lua filter
 * `pandoc/filters/pagebreak.lua` — portable page break filter
+* `pandoc/filters/tts.lua` — TTS spoken-cue filter
 * `pandoc/templates/toc.html` — template that wraps the TOC in a collapsible `<details>` block
 
 ---
@@ -142,7 +147,7 @@ Refer to upstream project docs:
 ### Standalone HTML (complete document)
 
 ```bash
-pandoc --defaults pandoc/html.yaml input.md -o output.html
+pandoc --defaults pandoc/defaults/html.yaml input.md -o output.html
 ```
 
 Generates a complete HTML file with `<html>`, `<head>`, and `<body>` tags.
@@ -150,7 +155,7 @@ Generates a complete HTML file with `<html>`, `<head>`, and `<body>` tags.
 ### HTML with Collapsible TOC
 
 ```bash
-pandoc --defaults pandoc/html-toc.yaml input.md -o output.html
+pandoc --defaults pandoc/defaults/html-toc.yaml input.md -o output.html
 ```
 
 Outputs **only the table of contents** — no document body. The `toc.html` template renders just the TOC wrapped in a collapsible `<details>` block, making it suitable for injecting a standalone nav into an existing page.
@@ -158,7 +163,7 @@ Outputs **only the table of contents** — no document body. The `toc.html` temp
 ### HTML Fragment (for insertion into existing HTML)
 
 ```bash
-pandoc --defaults pandoc/html-fragment.yaml input.md -o content.html
+pandoc --defaults pandoc/defaults/html-fragment.yaml input.md -o content.html
 ```
 
 Generates just the body content for injecting into an existing page.
@@ -176,7 +181,7 @@ The `pandoc/syntax-highlighting.css` file contains all Pandoc pygments syntax hi
 ### PDF
 
 ```bash
-pandoc --defaults pandoc/pdf.yaml input.md -o output.pdf
+pandoc --defaults pandoc/defaults/pdf.yaml input.md -o output.pdf
 ```
 
 Generates a print-ready PDF via XeLaTeX with a table of contents, numbered sections, and coloured hyperlinks.
@@ -192,7 +197,7 @@ Each defaults file bundles sensible defaults for its output format:
 You can override any option at runtime:
 
 ```bash
-pandoc --defaults pandoc/html.yaml \
+pandoc --defaults pandoc/defaults/html.yaml \
   --toc-depth=2 \
   --css custom.css \
   input.md -o output.html

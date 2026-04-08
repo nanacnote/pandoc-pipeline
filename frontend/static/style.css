@@ -173,31 +173,33 @@ textarea:focus {
   height: 0;
 }
 
-/* ── Options row ────────────────────────────────────────────── */
-.options-row {
-  display: flex;
+/* ── Format grid ────────────────────────────────────────────── */
+.format-grid {
+  display: grid;
+  grid-template-columns: max-content minmax(130px, 180px) 24px max-content minmax(130px, 180px);
   align-items: center;
-  gap: 10px;
+  column-gap: 8px;
+  row-gap: 8px;
   margin: 10px 0 6px;
-  flex-wrap: wrap;
 }
 
-.options-row .field {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.options-row label {
+.format-grid label {
   font-size: 12px;
   color: var(--text-muted);
   white-space: nowrap;
+  text-align: right;
 }
 
-.options-row .arrow {
+.format-grid .arrow {
   font-size: 16px;
   color: var(--text-muted);
+  text-align: center;
   line-height: 1;
+}
+
+/* Defaults select spans cols 2–5 (fills same width as from+arrow+to) */
+.format-grid .span-select {
+  grid-column: 2 / 6;
 }
 
 select {

@@ -42,27 +42,18 @@
         <input type="file" id="file-input" tabindex="-1" aria-hidden="true">
       </div>
 
-      <!-- Format row -->
-      <div class="options-row">
-        <div class="field">
-          <label for="from-select">From</label>
-          <select id="from-select"></select>
-        </div>
-        <div class="arrow">&#8594;</div>
-        <div class="field">
-          <label for="to-select">To</label>
-          <select id="to-select"></select>
-        </div>
-      </div>
+      <!-- Format / defaults grid -->
+      <div class="format-grid">
+        <label for="from-select">From</label>
+        <select id="from-select"></select>
+        <span class="arrow">&#8594;</span>
+        <label for="to-select">To</label>
+        <select id="to-select"></select>
 
-      <!-- Defaults file (optional) -->
-      <div class="options-row">
-        <div class="field">
-          <label for="defaults-select">Defaults</label>
-          <select id="defaults-select">
-            <option value="">— none (use From / To above) —</option>
-          </select>
-        </div>
+        <label for="defaults-select">Defaults</label>
+        <select id="defaults-select" class="span-select">
+          <option value="">&#8212; none (use From / To above) &#8212;</option>
+        </select>
       </div>
 
       <!-- Extra flags (collapsible) -->

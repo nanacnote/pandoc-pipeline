@@ -13,7 +13,7 @@ PANDOC = os.environ.get("PANDOC_BIN", "pandoc")
 TIMEOUT = int(os.environ.get("PANDOC_TIMEOUT", "30"))
 # Directory containing project defaults files and filters.
 # In Docker the working directory is /app and pandoc/ is copied there.
-PANDOC_DIR = Path(os.environ.get("PANDOC_DIR", Path(__file__).parent / "pandoc"))
+PANDOC_DIR = Path(os.environ.get("PANDOC_DIR", Path(__file__).parent / "pandoc" / "defaults"))
 
 # Formats that pandoc writes as binary files — returned as downloads.
 BINARY_FORMATS = frozenset(

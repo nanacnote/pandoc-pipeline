@@ -1,5 +1,5 @@
 ---
-description: "Build pandoc output from a markdown file. Use when: converting markdown to HTML or PDF, running pandoc, generating output beside input."
+description: "Build pandoc output from a markdown file. Use when: converting markdown to HTML, PDF, or plain text, running pandoc, generating output beside input."
 argument-hint: "e.g. tests/input.md as html"
 agent: "agent"
 tools: [run_in_terminal]
@@ -11,17 +11,18 @@ Convert the specified markdown file using the pandoc pipeline.
 
 1. Parse the user's request to identify:
    - **Input file** — the `.md` file to convert (default: `tests/input.md`)
-   - **Format** — one of: `html`, `html-fragment`, `html-toc`, `pdf` (default: `html`)
+   - **Format** — one of: `html`, `html-fragment`, `html-toc`, `pdf`, `tts` (default: `html`)
 
-2. Derive the output path by replacing the `.md` extension with the appropriate extension (`.html` or `.pdf`) in the same directory as the input file.
+2. Derive the output path by replacing the `.md` extension with the appropriate extension (`.html`, `.pdf`, or `.txt`) in the same directory as the input file.
 
 3. Select the defaults file based on format:
-   | Format          | Defaults file               |
-   | --------------- | --------------------------- |
-   | `html`          | `pandoc/html.yaml`          |
-   | `html-fragment` | `pandoc/html-fragment.yaml` |
-   | `html-toc`      | `pandoc/html-toc.yaml`      |
-   | `pdf`           | `pandoc/pdf.yaml`           |
+   | Format          | Defaults file                       |
+   | --------------- | ----------------------------------- |
+   | `html`          | `pandoc/defaults/html.yaml`         |
+   | `html-fragment` | `pandoc/defaults/html-fragment.yaml`|
+   | `html-toc`      | `pandoc/defaults/html-toc.yaml`     |
+   | `pdf`           | `pandoc/defaults/pdf.yaml`          |
+   | `tts`           | `pandoc/defaults/tts.yaml`          |
 
 4. Show the user the exact commands that will be run and ask for confirmation before proceeding:
    ```
@@ -40,6 +41,7 @@ Convert the specified markdown file using the pandoc pipeline.
 
 ## Examples
 
-- "build tests/input.md as html" → `pandoc --defaults pandoc/html.yaml tests/input.md -o tests/input.html`
-- "convert local/blog-post-home-paas.md to pdf" → `pandoc --defaults pandoc/pdf.yaml local/blog-post-home-paas.md -o local/blog-post-home-paas.pdf`
-- "generate toc html for tests/input.md" → `pandoc --defaults pandoc/html-toc.yaml tests/input.md -o tests/input.html`
+- "build tests/input.md as html" → `pandoc --defaults pandoc/defaults/html.yaml tests/input.md -o tests/input.html`
+- "convert local/blog-post-home-paas.md to pdf" → `pandoc --defaults pandoc/defaults/pdf.yaml local/blog-post-home-paas.md -o local/blog-post-home-paas.pdf`
+- "generate toc html for tests/input.md" → `pandoc --defaults pandoc/defaults/html-toc.yaml tests/input.md -o tests/input.html`
+- "convert tests/input.md to tts" → `pandoc --defaults pandoc/defaults/tts.yaml tests/input.md -o tests/input.txt`
