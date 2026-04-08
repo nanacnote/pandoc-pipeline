@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pandoc Converter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Pandoc Converter</h1>
+    <span>browser interface for <code>pandoc</code></span>
+  </header>
+
+  <main class="panel">
+    <form id="convert-form" novalidate>
+
+      <!-- Input mode tab strip -->
+      <div class="tabs">
+        <input type="radio" name="mode" id="mode-paste" value="paste" checked>
+        <label for="mode-paste">Paste text</label>
+        <input type="radio" name="mode" id="mode-upload" value="upload">
+        <label for="mode-upload">Upload file</label>
+      </div>
+      <div class="tab-rule"></div>
+
+      <!-- Paste -->
+      <div id="paste-section">
+        <textarea id="content" rows="12"
+          placeholder="Paste your markup here…"
+          spellcheck="false"
+          autocomplete="off"></textarea>
+      </div>
+
+      <!-- Upload / drop zone -->
+      <div id="upload-section" hidden>
+        <div id="drop-zone">
+          <span id="drop-label">Drop a file here or <u>click to browse</u></span>
+          <span id="file-name" hidden></span>
+        </div>
+        <input type="file" id="file-input" tabindex="-1" aria-hidden="true">
+      </div>
+
+      <!-- Format row -->
+      <div class="options-row">
+        <div class="field">
+          <label for="from-select">From</label>
+          <select id="from-select"></select>
+        </div>
+        <div class="arrow">&#8594;</div>
+        <div class="field">
+          <label for="to-select">To</label>
+          <select id="to-select"></select>
+        </div>
+      </div>
+
+      <!-- Defaults file (optional) -->
+      <div class="options-row">
+        <div class="field">
+          <label for="defaults-select">Defaults</label>
+          <select id="defaults-select">
+            <option value="">— none (use From / To above) —</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Extra flags (collapsible) -->
+      <details id="extra-flags-details">
+        <summary>Extra flags</summary>
+        <input type="text" id="extra-flags"
+          placeholder="e.g. --toc --standalone --number-sections"
+          autocomplete="off" spellcheck="false">
+      </details>
+
+      <div class="button-row">
+        <button type="submit" id="convert-btn">Convert</button>
+      </div>
+
+    </form>
+
+    <!-- Output -->
+    <div id="output-section" hidden>
+      <div class="output-header">
+        <span class="output-label">Output</span>
+        <button id="copy-btn" type="button">Copy</button>
+      </div>
+      <pre id="output-pre"></pre>
+    </div>
+
+    <!-- Error -->
+    <div id="error-box" hidden>
+      <strong>Error</strong>
+      <pre id="error-text"></pre>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

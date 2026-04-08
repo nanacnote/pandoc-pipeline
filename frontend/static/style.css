@@ -1,0 +1,372 @@
+/* ── Variables ──────────────────────────────────────────────── */
+:root {
+  --bg:           #c0c0c0;
+  --panel-bg:     #ffffff;
+  --panel-border: #999999;
+  --accent:       #1a5294;
+  --accent-dark:  #133d70;
+  --text:         #111111;
+  --text-muted:   #555555;
+  --input-border: #888888;
+  --tab-inactive: #d8d8d8;
+  --error-bg:     #fff0f0;
+  --error-border: #cc0000;
+  --output-bg:    #f8f8f8;
+}
+
+/* ── Reset / base ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 20px 16px 40px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+code {
+  font-family: monospace;
+  font-size: 12px;
+}
+
+/* ── Header (window-title style) ────────────────────────────── */
+header {
+  max-width: 860px;
+  margin: 0 auto 0;
+  background: var(--accent);
+  color: #ffffff;
+  padding: 6px 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  border: 1px solid var(--accent-dark);
+  border-bottom: none;
+}
+
+header h1 {
+  font-size: 13px;
+  font-weight: bold;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+header span {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+header code {
+  opacity: 0.9;
+}
+
+/* ── Main panel ─────────────────────────────────────────────── */
+.panel {
+  max-width: 860px;
+  margin: 0 auto;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  padding: 14px 16px 18px;
+}
+
+/* ── Tab strip ──────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin-bottom: 0;
+}
+
+.tabs input[type="radio"] {
+  display: none;
+}
+
+.tabs label {
+  display: inline-block;
+  padding: 4px 14px;
+  cursor: pointer;
+  background: var(--tab-inactive);
+  border: 1px solid var(--input-border);
+  border-bottom: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  user-select: none;
+  position: relative;
+  bottom: -1px;
+}
+
+.tabs input[type="radio"]:checked + label {
+  background: var(--panel-bg);
+  color: var(--text);
+  border-color: var(--panel-border);
+  border-bottom-color: var(--panel-bg);
+  font-weight: 500;
+  z-index: 1;
+}
+
+.tab-rule {
+  border-top: 1px solid var(--panel-border);
+  margin-bottom: 10px;
+}
+
+/* ── Textarea ───────────────────────────────────────────────── */
+textarea {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--input-border);
+  padding: 6px 8px;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text);
+  background: #fff;
+  resize: vertical;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(26, 82, 148, 0.18);
+}
+
+/* ── Drop zone ──────────────────────────────────────────────── */
+#upload-section {
+  margin-bottom: 4px;
+}
+
+#drop-zone {
+  border: 2px dashed var(--input-border);
+  padding: 36px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px;
+  background: #fafafa;
+  transition: border-color 0.1s, background 0.1s;
+}
+
+#drop-zone:hover,
+#drop-zone.drag-over {
+  border-color: var(--accent);
+  background: #f0f5ff;
+  color: var(--text);
+}
+
+#drop-zone u {
+  color: var(--accent);
+}
+
+#file-name {
+  display: block;
+  margin-top: 6px;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+#file-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* ── Options row ────────────────────────────────────────────── */
+.options-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 6px;
+  flex-wrap: wrap;
+}
+
+.options-row .field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.options-row label {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.options-row .arrow {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+select {
+  font-family: inherit;
+  font-size: 12px;
+  border: 1px solid var(--input-border);
+  padding: 3px 6px;
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  min-width: 140px;
+}
+
+select:focus {
+  border-color: var(--accent);
+}
+
+/* ── Extra flags (collapsible) ──────────────────────────────── */
+details {
+  margin: 8px 0;
+}
+
+details summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-muted);
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+details summary::before {
+  content: "▶";
+  font-size: 9px;
+  display: inline-block;
+  transition: transform 0.15s;
+}
+
+details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+details[open] summary {
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+details input[type="text"] {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--input-border);
+  padding: 5px 8px;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+}
+
+details input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(26, 82, 148, 0.18);
+}
+
+/* ── Convert button ─────────────────────────────────────────── */
+.button-row {
+  margin-top: 12px;
+}
+
+button[type="submit"] {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 5px 22px;
+  background: var(--accent);
+  color: #ffffff;
+  border: 1px solid var(--accent-dark);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+}
+
+button[type="submit"]:hover {
+  background: var(--accent-dark);
+}
+
+button[type="submit"]:active {
+  transform: translateY(1px);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
+
+/* ── Output section ─────────────────────────────────────────── */
+#output-section {
+  margin-top: 16px;
+  border-top: 1px solid var(--panel-border);
+  padding-top: 10px;
+}
+
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.output-label {
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+
+#copy-btn {
+  font-family: inherit;
+  font-size: 11px;
+  padding: 3px 12px;
+  background: var(--panel-bg);
+  color: var(--text);
+  border: 1px solid var(--input-border);
+  cursor: pointer;
+}
+
+#copy-btn:hover {
+  background: var(--tab-inactive);
+}
+
+#output-pre {
+  background: var(--output-bg);
+  border: 1px solid var(--panel-border);
+  padding: 10px;
+  font-family: monospace;
+  font-size: 12px;
+  overflow: auto;
+  max-height: 420px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+  color: var(--text);
+}
+
+/* ── Error box ──────────────────────────────────────────────── */
+#error-box {
+  margin-top: 14px;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  padding: 10px 12px;
+}
+
+#error-box strong {
+  display: block;
+  color: var(--error-border);
+  font-size: 12px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#error-box pre {
+  margin: 0;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--text);
+  font-family: monospace;
+}
