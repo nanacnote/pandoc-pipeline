@@ -61,12 +61,25 @@ def formats():
     return jsonify(input=_INPUT_FORMATS, output=_OUTPUT_FORMATS)
 
 
+import re
+
+
+def _yaml_to_field(path: Path) -> str:
+    """Extract the 'to:' value from a pandoc defaults YAML without a full parser."""
+    try:
+        text = path.read_text()
+        m = re.search(r"^to:\s*(\S+)", text, re.MULTILINE)
+        return m.group(1) if m else ""
+    except Exception:
+        return ""
+
+
 @app.get("/api/defaults")
 def defaults():
-    """Return available pandoc defaults files as {label, value} pairs."""
+    """Return available pandoc defaults files as {label, value, ext} objects."""
     files = sorted(PANDOC_DIR.glob("*.yaml"))
     return jsonify([
-        {"label": f.stem, "value": str(f)}
+        {"label": f.stem, "value": str(f), "ext": _yaml_to_field(f) or f.stem}
         for f in files
     ])
 
