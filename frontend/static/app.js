@@ -67,18 +67,6 @@ function setupTabs() {
       document.getElementById("paste-section").hidden  = !isPaste;
       document.getElementById("upload-section").hidden =  isPaste;
 
-      // Clear state belonging to the section we just left.
-      if (isPaste) {
-        // Switched to paste — reset upload state.
-        uploadedFile = null;
-        document.getElementById("file-input").value = "";
-        document.getElementById("file-name").hidden = true;
-        document.getElementById("drop-label").hidden = false;
-      } else {
-        // Switched to upload — clear the textarea.
-        document.getElementById("content").value = "";
-      }
-
       hideResults();
     });
   });
