@@ -184,8 +184,10 @@ async function doConvert() {
   } else {
     /* binary — derive filename from Content-Disposition if present */
     const disp  = res.headers.get("Content-Disposition") || "";
-    const match = disp.match(/filename="([^"]+)"/);
-    const fname = match ? match[1] : `output.${formatToExt(to || defaultsExt || "out")}`;
+    const match = disp.match(/filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i);
+    const headerName = match ? decodeURIComponent(match[1] || match[2] || "") : "";
+    const fallbackExt = formatToExt(defaultsExt || to || "out");
+    const fname = headerName || `output.${fallbackExt}`;
     const blob  = await res.blob();
     triggerDownload(blob, fname);
   }
@@ -219,6 +221,30 @@ function setupDownloadButton() {
   });
 }
 
+function setupDownloadImagesButton() {
+  document.getElementById("download-images-btn").addEventListener("click", () => {
+    const html = document.getElementById("output-pre").textContent || "";
+    const artifacts = extractDataImageArtifacts(html);
+    if (!artifacts.length) {
+      const btn = document.getElementById("download-images-btn");
+      const prev = btn.textContent;
+      btn.textContent = "No embedded images";
+      setTimeout(() => (btn.textContent = prev), 1500);
+      return;
+    }
+
+    for (const artifact of artifacts) {
+      const blob = b64ToBlob(artifact.contentB64, artifact.mimeType);
+      triggerDownload(blob, artifact.filename, false);
+    }
+
+    const btn = document.getElementById("download-images-btn");
+    const prev = btn.textContent;
+    btn.textContent = `Downloaded ${artifacts.length}`;
+    setTimeout(() => (btn.textContent = prev), 1500);
+  });
+}
+
 /* ── UI helpers ──────────────────────────────────────────────── */
 
 function showOutput(text, ext, hideActions) {
@@ -227,6 +253,7 @@ function showOutput(text, ext, hideActions) {
   document.getElementById("output-section").hidden = false;
   document.getElementById("error-box").hidden = true;
   document.querySelector(".output-actions").hidden = !!hideActions;
+  document.getElementById("download-images-btn").hidden = (lastOutputExt !== "html") || !!hideActions;
 }
 
 function showError(message) {
@@ -246,7 +273,7 @@ function setLoading(loading) {
   btn.textContent = loading ? "Converting…" : "Convert";
 }
 
-function triggerDownload(blob, filename) {
+function triggerDownload(blob, filename, showNotice = true) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -255,8 +282,61 @@ function triggerDownload(blob, filename) {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  /* show a notice in the output area */
-  showOutput(`Binary output downloaded as "${filename}".`, null, true);
+  if (showNotice) {
+    /* show a notice in the output area */
+    showOutput(`Binary output downloaded as "${filename}".`, null, true);
+  }
+}
+
+function b64ToBlob(contentB64, mimeType) {
+  const binary = atob(contentB64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: mimeType });
+}
+
+function extractDataImageArtifacts(html) {
+  const matches = html.matchAll(/<img\b[^>]*\bsrc\s*=\s*(["'])(data:image\/[^"']+)\1/gi);
+  const seen = new Map();
+  let idx = 1;
+
+  for (const match of matches) {
+    const dataUri = match[2] || "";
+    if (seen.has(dataUri)) continue;
+
+    const parts = dataUri.split(",", 2);
+    if (parts.length !== 2) continue;
+
+    const meta = parts[0].slice(5);
+    const payload = parts[1];
+    const metaParts = meta.split(";").map((p) => p.trim().toLowerCase());
+    const mimeType = metaParts[0] || "";
+    if (!mimeType.startsWith("image/") || !metaParts.includes("base64")) continue;
+
+    const ext = mimeTypeToExt(mimeType);
+    seen.set(dataUri, {
+      filename: `image-${String(idx).padStart(3, "0")}.${ext}`,
+      mimeType,
+      contentB64: payload,
+    });
+    idx += 1;
+  }
+
+  return [...seen.values()];
+}
+
+function mimeTypeToExt(mimeType) {
+  const map = {
+    "image/png": "png",
+    "image/jpeg": "jpg",
+    "image/webp": "webp",
+    "image/gif": "gif",
+    "image/svg+xml": "svg",
+    "image/bmp": "bmp",
+  };
+  return map[mimeType] || "bin";
 }
 
 /* ── Boot ────────────────────────────────────────────────────── */
@@ -274,4 +354,5 @@ document.addEventListener("DOMContentLoaded", () => {
   setupForm();
   setupCopyButton();
   setupDownloadButton();
+  setupDownloadImagesButton();
 });

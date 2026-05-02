@@ -94,6 +94,7 @@ def convert():
     # When a defaults file is chosen it supplies from/to itself, so they become
     # optional.  Without a defaults file both are required.
     using_defaults = bool(defaults_val)
+    defaults_path = None
 
     if not using_defaults and (not from_fmt or not to_fmt):
         return jsonify(error="'from' and 'to' formats are required"), 400
@@ -126,7 +127,7 @@ def convert():
         return jsonify(error="No input provided"), 400
 
     # Infer output extension: prefer explicit to_fmt, fall back to defaults stem.
-    out_ext = to_fmt or (defaults_path.stem if using_defaults else "out")
+    out_ext = to_fmt or (defaults_path.stem if defaults_path else "out")
 
     with tempfile.TemporaryDirectory() as tmp:
         in_path  = Path(tmp) / "input"
@@ -134,6 +135,7 @@ def convert():
         in_path.write_bytes(content)
 
         if using_defaults:
+            assert defaults_path is not None
             cmd = (
                 [PANDOC, "--defaults", str(defaults_path), str(in_path), "-o", str(out_path)]
                 + extra_args
